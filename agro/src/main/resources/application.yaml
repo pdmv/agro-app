@@ -24,6 +24,6 @@ jwt:
   refreshable-duration: 72000 # in seconds
 
 cloudinary:
-  cloud-name: "dyuafq1hx"
-  api-key: "929398868625195"
-  api-secret: "d8Wfxo3MLa9HX5ueGU0GXaYx1Nc"
+  cloud-name: "<>"
+  api-key: "<>"
+  api-secret: "<>"

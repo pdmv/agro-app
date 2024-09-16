@@ -50,3 +50,8 @@ yarn-error.*
 # macOS
 .DS_Store
 *.pem
+
+iOS/
+android/
+.vscode/
+package-lock.json

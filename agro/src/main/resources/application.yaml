@@ -1,0 +1,29 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /agro
+
+spring:
+  datasource:
+    url: "jdbc:mysql://localhost:3306/agrodb"
+    username: root
+    password: Admin@123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+jwt:
+  signer-key: "OG+R5iv/3KlE8OI12F4+T5WcoUY+2DskwKLFunP/mIMfdEtneZ3TgHY9aIlAQLf8"
+  valid-duration: 3600 # in seconds
+  refreshable-duration: 72000 # in seconds
+
+cloudinary:
+  cloud-name: "dyuafq1hx"
+  api-key: "929398868625195"
+  api-secret: "d8Wfxo3MLa9HX5ueGU0GXaYx1Nc"

@@ -1,5 +1,6 @@
 package com.pdmv.agro.pojo;
 
+import com.pdmv.agro.validator.PhoneNumberConstraint;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -53,6 +54,7 @@ public class Order {
 
     @Size(max = 20)
     @Column(name = "shipping_phone", length = 20)
+    @PhoneNumberConstraint
     private String shippingPhone;
 
     @Size(max = 20)

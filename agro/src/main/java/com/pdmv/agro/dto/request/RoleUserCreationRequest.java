@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserCreationRequest {
+public class RoleUserCreationRequest {
     @Size(min = 1, max = 255, message = "INVALID_FIRSTNAME")
     String firstname;
     @Size(min = 1, max = 255, message = "INVALID_LASTNAME")
@@ -32,5 +32,5 @@ public class UserCreationRequest {
     @Email(message = "INVALID_EMAIL")
     String email;
     @Valid
-    AccountCreationRequest account;
+    RoleAccountCreationRequest account;
 }

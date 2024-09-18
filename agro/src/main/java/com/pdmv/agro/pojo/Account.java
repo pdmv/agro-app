@@ -1,5 +1,7 @@
 package com.pdmv.agro.pojo;
 
+import com.pdmv.agro.enums.Role;
+import com.pdmv.agro.validator.EnumConstraint;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -23,12 +25,12 @@ public class Account {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 25)
+    @Size(min = 4, max = 25, message = "INVALID_USERNAME")
     @NotNull
     @Column(name = "username", nullable = false, length = 25)
     private String username;
 
-    @Size(max = 255)
+    @Size(min = 6, max = 255, message = "INVALID_PASSWORD")
     @NotNull
     @Column(name = "password", nullable = false)
     private String password;
@@ -36,6 +38,7 @@ public class Account {
     @Size(max = 20)
     @NotNull
     @Column(name = "role", nullable = false, length = 20)
+    @EnumConstraint(enumClass = Role.class, message = "INVALID_ROLE")
     private String role;
 
     @Size(max = 255)

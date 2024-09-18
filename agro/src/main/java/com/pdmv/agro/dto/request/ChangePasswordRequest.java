@@ -9,9 +9,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AccountCreationRequest {
-    @Size(min = 4, max = 25, message = "INVALID_USERNAME")
-    String username;
+public class ChangePasswordRequest {
     @Size(min = 6, max = 255, message = "INVALID_PASSWORD")
-    String password;
+    String oldPassword;
+    @Size(min = 6, max = 255, message = "INVALID_PASSWORD")
+    String newPassword;
 }

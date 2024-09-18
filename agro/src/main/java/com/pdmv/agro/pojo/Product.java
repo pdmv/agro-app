@@ -21,7 +21,7 @@ public class Product {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 255)
+    @Size(min = 2, max = 255, message = "INVALID_PRODUCT_NAME")
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;

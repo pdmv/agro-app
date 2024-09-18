@@ -1,12 +1,8 @@
 package com.pdmv.agro.config;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,16 +10,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-
-import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -33,7 +24,7 @@ import java.io.IOException;
 public class SecurityConfig {
     String[] PUBLIC_ENDPOINTS = {
             "/users",
-            "/auth/token",
+            "/auth/token", "auth/introspect"
     };
 
     CustomJwtDecoder customJwtDecoder;
@@ -43,7 +34,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> {
             // Cho xác thực tất cả các public endpoints
             request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                    .requestMatchers(HttpMethod.GET, "/auth/test-cors").permitAll()
+//                    .requestMatchers(HttpMethod.GET, "/auth/test-cors").permitAll()
                     .anyRequest().authenticated();
         });
 
@@ -63,7 +54,7 @@ public class SecurityConfig {
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter(){
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);

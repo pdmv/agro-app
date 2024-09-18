@@ -1,7 +1,9 @@
 package com.pdmv.agro.pojo;
 
+import com.pdmv.agro.validator.PhoneNumberConstraint;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -21,7 +23,7 @@ public class Supplier {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 255)
+    @Size(min = 5, max = 255, message = "INVALID_SUPPLIER_NAME")
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
@@ -32,6 +34,7 @@ public class Supplier {
 
     @Size(max = 15)
     @Column(name = "phone_number", length = 15)
+    @PhoneNumberConstraint
     private String phoneNumber;
 
     @ColumnDefault("CURRENT_TIMESTAMP")

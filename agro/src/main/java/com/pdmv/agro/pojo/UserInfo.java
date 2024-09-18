@@ -1,8 +1,11 @@
 package com.pdmv.agro.pojo;
 
+import com.pdmv.agro.enums.Gender;
+import com.pdmv.agro.validator.DobConstraint;
+import com.pdmv.agro.validator.EnumConstraint;
+import com.pdmv.agro.validator.PhoneNumberConstraint;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
@@ -28,12 +31,12 @@ public class UserInfo {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 255)
+    @Size(min = 1, max = 255, message = "INVALID_FIRSTNAME")
     @NotNull
     @Column(name = "firstname", nullable = false)
     private String firstname;
 
-    @Size(max = 255)
+    @Size(min = 1, max = 255, message = "INVALID_LASTNAME")
     @NotNull
     @Column(name = "lastname", nullable = false)
     private String lastname;
@@ -42,19 +45,23 @@ public class UserInfo {
     @Column(name = "address")
     private String address;
 
-    @Size(max = 15)
+    @Size(max = 15, message = "INVALID_PHONE_NUMBER")
     @Column(name = "phone_number", length = 15)
+    @PhoneNumberConstraint
     private String phoneNumber;
 
     @Size(max = 10)
     @Column(name = "gender", length = 10)
+    @EnumConstraint(enumClass = Gender.class, message = "INVALID_GENDER")
     private String gender;
 
     @Column(name = "dob")
+    @DobConstraint(min = 18, message = "INVALID_DOB")
     private LocalDate dob;
 
     @Size(max = 255)
     @Column(name = "email")
+    @Email(message = "INVALID_EMAIL")
     private String email;
 
     @NotNull

@@ -4,7 +4,6 @@ import com.pdmv.agro.enums.Gender;
 import com.pdmv.agro.validator.DobConstraint;
 import com.pdmv.agro.validator.EnumConstraint;
 import com.pdmv.agro.validator.PhoneNumberConstraint;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -17,7 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserCreationRequest {
+public class ChangeProfileRequest {
     @Size(min = 1, max = 255, message = "INVALID_FIRSTNAME")
     String firstname;
     @Size(min = 1, max = 255, message = "INVALID_LASTNAME")
@@ -31,6 +30,4 @@ public class UserCreationRequest {
     LocalDate dob;
     @Email(message = "INVALID_EMAIL")
     String email;
-    @Valid
-    AccountCreationRequest account;
 }

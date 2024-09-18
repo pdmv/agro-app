@@ -1,7 +1,10 @@
 package com.pdmv.agro.service;
 
+import com.nimbusds.jose.JOSEException;
 import com.pdmv.agro.dto.request.AuthenticationRequest;
+import com.pdmv.agro.dto.request.IntrospectRequest;
 import com.pdmv.agro.dto.response.AuthenticationResponse;
+import com.pdmv.agro.dto.response.IntrospectResponse;
 import com.pdmv.agro.exception.AppException;
 import com.pdmv.agro.enums.ErrorCode;
 import com.pdmv.agro.repository.AccountRepository;
@@ -13,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.text.ParseException;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +44,22 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
+                .build();
+    }
+
+    public IntrospectResponse introspect(IntrospectRequest request)
+            throws JOSEException, ParseException {
+        var token = request.getToken();
+        boolean isValid = true;
+
+        try {
+            jwtUtil.validateToken(token);
+        } catch (AppException e) {
+            isValid = false;
+        }
+
+        return IntrospectResponse.builder()
+                .valid(isValid)
                 .build();
     }
 }

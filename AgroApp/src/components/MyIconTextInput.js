@@ -3,7 +3,9 @@ import { useState } from "react";
 import Feather from '@expo/vector-icons/Feather';
 import Color from "../themes/Color";
 
-export default MyIconTextInput = ({ text, setText, icon, placeholder, isPassword=false }) => {
+export default MyIconTextInput = ({
+  text, setText, icon, placeholder, isPassword = false, isPhoneNumber = false, isEmail = false
+}) => {
   const [secure, setSecure] = useState(isPassword);
   const [isFocus, setIsFocus] = useState(false);
 
@@ -15,12 +17,18 @@ export default MyIconTextInput = ({ text, setText, icon, placeholder, isPassword
     }
   }
 
+  const keyboardType = () => {
+    if (isPhoneNumber) return "phone-pad";
+    if (isEmail) return "email-address";
+    return "default";
+  };
+
   return (
     <View style={[
       styles.container,
-      { borderColor: isFocus ? Color.onFocus : Color.whiteBackground }
+      { borderColor: isFocus ? Color.primary : Color.gray }
     ]}>
-      <Feather name={isPassword ? "lock" : icon} size={24} color={isFocus ? Color.onFocus : Color.icon} />
+      <Feather name={isPassword ? "lock" : icon} size={24} color={Color.primary} />
       <TextInput
         style={styles.text}
         placeholder={placeholder}
@@ -29,13 +37,14 @@ export default MyIconTextInput = ({ text, setText, icon, placeholder, isPassword
         secureTextEntry={secure && isPassword}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
+        keyboardType={keyboardType()}
       />
       {isPassword && <>
         <TouchableOpacity style={{ marginLeft: 14 }}>
           <Feather
             name={secure ? "eye-off" : "eye"}
             size={24}
-            color={isFocus ? Color.onFocus : Color.icon}
+            color={Color.primary}
             onPress={() => setSecure(!secure)}
           />
         </TouchableOpacity>
@@ -48,19 +57,19 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Color.whiteBackground,
+    backgroundColor: Color.gray,
     padding: 16,
     height: 60,
     minWidth: 330,
     borderRadius: 12,
     marginBottom: 10,
     borderWidth: 2,
-    borderColor: Color.whiteBackground,
+    borderColor: Color.gray,
   },
   text: {
     flex: 1,
     fontSize: 18,
     marginLeft: 14,
-    color: Color.text,
+    color: Color.primary,
   }
 });

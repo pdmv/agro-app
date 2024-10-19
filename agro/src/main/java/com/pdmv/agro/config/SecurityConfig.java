@@ -22,9 +22,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
-    String[] PUBLIC_ENDPOINTS = {
+    String[] PUBLIC_POST_ENDPOINTS = {
             "/users",
             "/auth/token", "auth/introspect"
+    };
+
+    String[] PUBLIC_GET_ENDPOINTS = {
+            "/products",
+            "/prices"
     };
 
     CustomJwtDecoder customJwtDecoder;
@@ -33,8 +38,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request -> {
             // Cho xác thực tất cả các public endpoints
-            request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-//                    .requestMatchers(HttpMethod.GET, "/auth/test-cors").permitAll()
+            request.requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
+                    .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
                     .anyRequest().authenticated();
         });
 

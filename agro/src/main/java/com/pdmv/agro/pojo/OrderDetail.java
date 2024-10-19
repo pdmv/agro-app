@@ -20,6 +20,13 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraph(
+        name = "OrderDetail.details",
+        attributeNodes = {
+                @NamedAttributeNode("product"),
+                @NamedAttributeNode("price"),
+        }
+)
 public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

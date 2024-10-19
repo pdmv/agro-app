@@ -1,47 +1,84 @@
 import { Image, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MyIconTextInput from "../components/MyIconTextInput";
 import Color from "../themes/Color";
 import { useDispatch, useSelector } from "react-redux";
 import MyAuthButton from "../components/MyAuthButton";
-import { loginThunk } from "../redux/authSlice";
+import { getProfileThunk, loginThunk, resetError, resetStatus } from "../redux/authSlice";
+import ErrorModal from "../common/ErrorModal";
 
-const appIcon = require('../../assets/Images/app-icon.png');
+const appIconTitle = require('../../assets/Images/app_icon_title.png');
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const { status, error } = useSelector((state) => state.auth);
+  const { isAuthenticated, status, error, token } = useSelector((state) => state.auth);
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
-  const handleLogin = () => {
+  useEffect(() => {
+    if (error) {
+      setShowErrorModal(true);
+    }
+  }, [error]);
+
+  const handleLogin = async () => {
     dispatch(loginThunk({ username, password }));
   };
 
+  useEffect(() => {
+    if (isAuthenticated && token) {
+      dispatch(getProfileThunk(token));
+      navigation.goBack();
+    }
+  }, [isAuthenticated, token, dispatch]);
+
+  const handleOk = () => {
+    setShowErrorModal(false);
+    dispatch(resetError());
+    dispatch(resetStatus());
+  };
+
+  const handleRegister = () => {
+    navigation.navigate("RegisterStack", { screen: 'Register' });
+  };
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          <View style={styles.titleContainer}>
-            <Image source={appIcon} style={styles.image} />
-            <Text style={styles.title}>Agro Market</Text>
-          </View>
-          <View style={styles.content}>
-            <MyIconTextInput text={username} setText={setUsername} icon="user" placeholder="Tên đăng nhập" />
-            <MyIconTextInput text={password} setText={setPassword} placeholder="Mật khẩu" isPassword={true} />
-            <MyAuthButton text="Đăng nhập" onPress={handleLogin} status={status} error={error} />
-            <View style={styles.subTitleContainer}>
-              <Text style={{ color: Color.text }}>Bạn chưa có tài khoản?</Text>
-              <TouchableOpacity style={{ marginLeft: 5 }}>
-                <Text style={{ color: Color.title, fontWeight: 'bold' }}>Đăng ký ngay</Text>
-              </TouchableOpacity>
+    <>
+      {/* Error Modal */}
+      {error && showErrorModal && (
+        <ErrorModal
+          errorCode={error.code}
+          msg={error.message}
+          visible={showErrorModal}
+          onPress={handleOk}
+        />
+      )}
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container}>
+            <View style={styles.headerContainer}>
+              <Image source={appIconTitle} style={styles.image} />
+            </View>
+            <View style={styles.content}>
+              <MyIconTextInput text={username} setText={setUsername} icon="user" placeholder="Tên đăng nhập" />
+              <MyIconTextInput text={password} setText={setPassword} placeholder="Mật khẩu" isPassword={true} />
+              <MyAuthButton text="Đăng nhập" onPress={handleLogin} status={status} error={error} />
+              <View style={styles.subTitleContainer}>
+                <Text style={{ color: Color.text }}>Bạn chưa có tài khoản?</Text>
+                <TouchableOpacity style={{ marginLeft: 5 }} onPress={handleRegister}>
+                  <Text style={{ color: Color.title, fontWeight: 'bold' }}>Đăng ký ngay</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-          </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView >
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView >
+    </>
   );
 };
 
@@ -50,10 +87,10 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.background,
+    backgroundColor: Color.white,
     padding: 16,
   },
-  titleContainer: {
+  headerContainer: {
     flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
@@ -64,8 +101,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    height: 90,
-    width: 90,
+    height: 200,
+    width: 200,
   },
   title: {
     fontSize: 24,

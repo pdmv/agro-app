@@ -23,7 +23,7 @@ public class Supplier {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(min = 5, max = 255, message = "INVALID_SUPPLIER_NAME")
+    @Size(min = 1, max = 255, message = "INVALID_SUPPLIER_NAME")
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;

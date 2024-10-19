@@ -33,7 +33,7 @@ public class CloudinaryService {
         }
     }
 
-    public void deleteAvatarAsync(String publicId) {
+    public void deleteAsync(String publicId) {
         CompletableFuture.runAsync(() -> {
             try {
                 ApiResponse apiResponse = cloudinary.api().deleteResources(Arrays.asList(publicId),

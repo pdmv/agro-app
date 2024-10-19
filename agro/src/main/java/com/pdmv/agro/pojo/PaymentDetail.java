@@ -18,6 +18,12 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraph(
+        name = "PaymentDetail.details",
+        attributeNodes = {
+                @NamedAttributeNode("purchaseOrder"),
+        }
+)
 public class PaymentDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

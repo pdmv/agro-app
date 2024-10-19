@@ -1,5 +1,7 @@
 package com.pdmv.agro.pojo;
 
+import com.pdmv.agro.enums.PurchaseOrderStatus;
+import com.pdmv.agro.validator.EnumConstraint;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -19,6 +21,13 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraph(
+        name = "PurchaseOrder.details",
+        attributeNodes = {
+                @NamedAttributeNode("supplier"),
+                @NamedAttributeNode("staff")
+        }
+)
 public class PurchaseOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +50,7 @@ public class PurchaseOrder {
     @Size(max = 20)
     @NotNull
     @Column(name = "status", nullable = false, length = 20)
+    @EnumConstraint(enumClass = PurchaseOrderStatus.class, message = "INVALID_STATUS")
     private String status;
 
     @ColumnDefault("CURRENT_TIMESTAMP")

@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraph(name = "UserInfo.account", attributeNodes = @NamedAttributeNode("account"))
 public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

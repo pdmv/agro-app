@@ -1,5 +1,8 @@
 package com.pdmv.agro.pojo;
 
+import com.pdmv.agro.enums.OrderStatus;
+import com.pdmv.agro.enums.PaymentMethod;
+import com.pdmv.agro.validator.EnumConstraint;
 import com.pdmv.agro.validator.PhoneNumberConstraint;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -20,23 +23,27 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraph(
+        name = "Order.details",
+        attributeNodes = {
+                @NamedAttributeNode("customer"),
+                @NamedAttributeNode("staff"),
+        }
+)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false)
     private UserInfo customer;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "staff_id", nullable = false)
     private UserInfo staff;
 
-    @NotNull
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
 
@@ -60,11 +67,13 @@ public class Order {
     @Size(max = 20)
     @ColumnDefault("'cash'")
     @Column(name = "payment_method", length = 20)
+    @EnumConstraint(enumClass = PaymentMethod.class, message = "INVALID_PAYMENT_METHOD")
     private String paymentMethod;
 
     @Size(max = 20)
     @NotNull
     @Column(name = "status", nullable = false, length = 20)
+    @EnumConstraint(enumClass = OrderStatus.class, message = "INVALID_ORDER_STATUS")
     private String status;
 
     @Lob
@@ -86,6 +95,8 @@ public class Order {
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+        active = true;
     }
 
     @PreUpdate

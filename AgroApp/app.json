@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "AgroApp",
-    "slug": "AgroApp",
+    "name": "Agro Market",
+    "slug": "AgroMarket",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -39,6 +39,11 @@
           }
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "05541457-fbda-45cb-abdc-c8ac973163a1"
+      }
+    }
   }
 }

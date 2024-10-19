@@ -15,13 +15,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -78,7 +76,6 @@ public class UserService {
         return userInfoMapper.toUserResponse(info);
     }
 
-
     public ChangeProfileResponse changeProfile(ChangeProfileRequest request) {
         Account account = getContextHolderAccount();
         UserInfo info = getContextUserInfo(account);
@@ -89,67 +86,11 @@ public class UserService {
         return userInfoMapper.toChangeProfileResponse(info);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    public UserResponse create(RoleUserCreationRequest request) {
-        UserInfo user = userInfoMapper.toUserInfo(request);
-        checkEmail(request.getEmail());
-
-        Account account = user.getAccount();
-        createAccount(account, request.getAccount().getRole());
-        accountRepository.save(account);
-
-        userInfoRepository.save(user);
-        return userInfoMapper.toUserResponse(user);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    public UserResponse getProfile(Integer userId) {
-        UserInfo info = userInfoRepository.getUserInfoById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.ID_NOT_EXISTED));
-
-        return userInfoMapper.toUserResponse(info);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    public ChangeProfileResponse changeProfile(Integer userInfoId, ChangeProfileRequest request) {
-        UserInfo info = userInfoRepository.getUserInfoById(userInfoId)
-                .orElseThrow(() -> new AppException(ErrorCode.ID_NOT_EXISTED));
-
-        userInfoMapper.partialUpdate(request, info);
-        userInfoRepository.save(info);
-
-        return userInfoMapper.toChangeProfileResponse(info);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<UserResponse> getUsers() {
-//        log.info(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString());
-
-        List<UserInfo> users = userInfoRepository.findAll().stream().toList();
-        return userInfoMapper.toListDto(users);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    public void changeAvatar(Integer userId, ChangeAvatarRequest request) {
-        UserInfo info = userInfoRepository.getUserInfoById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.ID_NOT_EXISTED));
-
-        Account account = info.getAccount();
-
-        // Xoá ảnh đại diện nếu đã có
-        deleteExistedAvatar(account);
-
-        // Upload ảnh đại diện
-        uploadAccountAvatar(account, request.getAvatar());
-
-        accountRepository.save(account);
-    }
-
     private Account getContextHolderAccount() {
         var context = SecurityContextHolder.getContext();
         String username = context.getAuthentication().getName();
 
-        return accountRepository.findByUsername(username)
+        return accountRepository.findAccountByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
     }
 
@@ -181,7 +122,7 @@ public class UserService {
 
     private void deleteExistedAvatar(Account account) {
         if (account.getAvatarPublicId() != null) {
-            cloudinaryService.deleteAvatarAsync(account.getAvatarPublicId());
+            cloudinaryService.deleteAsync(account.getAvatarPublicId());
         }
     }
 
